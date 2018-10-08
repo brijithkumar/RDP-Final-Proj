@@ -1,0 +1,159 @@
+<form (ngSubmit)="projectForm.form.valid && submitProject()" #projectForm="ngForm" >
+
+        <div class="d-flex flex-column col-12 col-sm-12 col-md-9 col-lg-7">
+        <div class="form-group d-flex">
+        <label class="control-label text-nowrap font-weight-bold mr-2">Project:</label>
+        <div class="form-group d-flex flex-column justify-content-right">
+         <input type="text" name="projectName" id="projectName" required class="form-control rounded-0 bg-light"
+                    [(ngModel)]="project.projectName" #projectName="ngModel">
+                    <div class="alert alert-danger px-0 py-2" *ngIf="(projectForm.submitted || projectName.dirty) && projectName.errors">
+                        <div *ngIf="projectName.errors.required">Project Name is required</div>
+                      </div>
+
+        <div class="d-flex flex-wrap flex-lg-nowrap mt-2">
+        <div class="form-check">
+        <label class="form-check-label text-nowrap mr-1">
+          <input type="checkbox" #projectDate="ngModel" class="form-check-input" name="projectDate" id="projectDate" 
+                  [(ngModel)]="project.enableProjectDate" #projectDate="ngModel" (ngModelChange)="setProjectDate(project.enableProjectDate);"
+                  >
+         Set Start and End Date
+        </label>
+        </div>
+        <div class="d-flex flex-column mr-1">
+           <input type="date" name="startDate" id="startDate" [(ngModel)]="project.startDate" #startDate="ngModel" 
+                      [disabled]="!project.enableProjectDate" required class="form-control 
+                      form-control-sm rounded-0 bg-light mr-md-1" placeholder="Start Date">
+                      <div class="alert alert-danger px-0 py-2" *ngIf="projectDate.value && (projectForm.submitted || startDate.dirty) && 
+                          startDate.errors">
+                          <div *ngIf="startDate.errors.required">Start Date is required</div>
+                        </div>
+          </div>
+        
+        <div class="d-flex flex-column">
+            <input type="date" name="endDate" id="endDate" [(ngModel)]="project.endDate" #endDate="ngModel" 
+                      [disabled]="!project.enableProjectDate" required class="form-control form-control-sm 
+                      rounded-0 bg-light" placeholder="End Date">
+                      <div class="alert alert-danger px-0 py-2" *ngIf="projectDate.value && (projectForm.submitted || 
+                      endDate.dirty) && endDate.errors">
+                          <div *ngIf="endDate.errors.required">End Date is required</div>
+                        </div>
+          </div>
+        </div>
+        </div>
+        </div>
+        
+        <div class="form-group d-flex">
+        <label class="control-label text-nowrap font-weight-bold mr-2">Priority:</label>
+        <div class="d-flex flex-column flex-grow-1">
+        <input type="range" min="0" max="30"  name="priority" id="priority" #priority="ngModel" 
+            class="custom-range rounded-0" required [(ngModel)]="project.priority">
+                      <div class="alert alert-danger px-0 py-2 mt-1" *ngIf="(projectForm.submitted || priority.touched) && priority.errors">
+                          <div *ngIf="priority.errors.required">Priority is required</div>
+                      </div>
+            </div>
+        </div>
+        <div class="form-group d-flex">
+        <label for="first_name" class="text-nowrap pr-0 font-weight-bold">Manager:</label>
+        <div class="d-flex flex-column flex-grow-1 mr-1">
+            <input type="text" name="manager" id="manager" class="form-control rounded-0 bg-light"
+                      [(ngModel)]="selectedManagerName" #manager="ngModel" readonly required>
+                      <div class="alert alert-danger px-0 py-2" *ngIf="(projectForm.submitted || manager.dirty) && manager.errors">
+                          <div *ngIf="manager.errors.required">Manager is required</div>
+                      </div>
+          </div>
+        <div>
+        <button id="searchManager" type="button" name="searchManager" class="form-control btn btn-sm border-dark rounded-circle" (click)="searchManager()">Search</button>
+        </div>
+        </div>
+        
+        <div class="d-flex justify-content-end mb-3">
+         <button type="submit" class=" btn btn-light border-dark rounded-0 mr-2" id="addProject" *ngIf="editProjectMode=='false'">Add</button>
+                  <button type="submit" class="btn btn-light border-dark rounded-0 mr-2" id="updateProject" *ngIf="editProjectMode=='true'">Update</button>
+                  <button type="button" class="btn btn-light border-dark rounded-0" id="resetProject" (click)="projectForm.reset(); 
+                    initializeProject(); getProjects(); ">Reset</button>
+        </div>
+        
+         <div *ngIf="statusFlag === 1" class="alert alert-success col-8">
+                  {{statusMessage}}
+                </div>
+                <div *ngIf="statusFlag === 2" class="alert alert-danger col-8">
+                  {{statusMessage}}
+                </div>
+        
+        <div class="border border-info border-left-0 border-right-0 border-bottom-0 ml-4">
+        <input type="text" class="form-control rounded-0 bg-light border-0 mt-2" 
+                    id="projectSearchName" name="projectSearchName" [(ngModel)]="projectSearchName" placeholder="Search...">
+        
+        
+        <div class="d-flex">
+                        <label class="control-label control-label-sm text-nowrap mr-1">Sort By:</label>
+                        <div class="d-flex flex-wrap my-2 px-0 justify-content-between flex-grow-1">
+                            <button type="button" class="btn btn-light px-1 rounded-0 border-dark text-wrap mr-1 mb-1 flex-grow-1" 
+                                (click)="sortBy('startDate')" id="startDateSort">Start Date</button>
+                            <button type="button" class="btn btn-light px-1 rounded-0 border-dark mr-1 mb-1 flex-grow-1"
+                                (click)="sortBy('endDate')" id="endDateSort">End Date</button>
+                            <button type="button" class="btn btn-light px-1 rounded-0 border-dark mr-1 mb-1 flex-grow-1"
+                                (click)="sortBy('priority')" id="prioritySort">Priority</button>
+                            <button type="button" class="btn btn-light mr-2 px-1 rounded-0 border-dark mb-1 flex-grow-1"
+                                (click)="sortBy('completedStatus')" id="completedStatusSort">Completed</button>
+                        </div>
+                    </div>
+        
+        <div *ngFor="let project of projects | projectFilter : projectSearchName" 
+          class="d-flex mx-2 flex-wrap flex-lg-nowrap py-3 border-dotted flex-grow-1">
+        
+        <div class="bg-light d-flex flex-column mr-2 pl-2 flex-shrink-1 flex-grow-1">
+        
+       
+        <div class="d-flex flex-row pb-2">
+        <label class="control-label pr-1">Project:</label>
+        <div>{{project.projectName}}</div>
+        </div>
+        
+        <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between">
+        <div class="d-flex flex-row flex-lg-nowrap flex-grow-1">
+        <label class="text-nowrap pr-1">No of Tasks:</label>
+        <div>{{project.numberOfTasks}}</div>
+        </div>
+        
+        <div class="d-flex flex-row flex-lg-nowrap flex-grow-1">
+        <label class="pr-1">Completed:</label>
+        <div>{{project.completedStatus}}</div>
+        </div>
+        </div>
+        
+        <div class="d-flex flex-wrap flex-lg-nowrap justify-content-between">
+        <div class="d-flex flex-row flex-lg-nowrap flex-grow-1">
+        <label class="text-nowrap pr-1">Start Date:</label>
+        <div>{{project.startDate}}</div>
+        </div>
+        
+        <div class="d-flex flex-row flex-lg-nowrap flex-grow-1" align="left">
+        <label class="control-label control-label-sm text-nowrap pr-1">End Date:</label>
+        <div>{{project.endDate}}</div>
+        </div>
+        </div>
+        
+        </div>
+        
+        <div class="d-flex flex-column text-center mr-2 flex-shrink-1 flex-wrap flex-grow-0 px-1">
+        <label class="control-label control-label-sm mb-0 px-4">Priority</label>
+        <div class="bg-light flex-grow-1">{{project.priority}}</div>
+        </div>
+        
+       
+        <div class="d-flex flex-column justify-content-between pl-0 flex-shrink-1 flex-grow-0 mt-1">
+        <button type="button" class="btn btn-sm btn-light rounded-0 border-dark text-dark py-lg-3 px-2 mb-1 mb-lg-0" id="editProject" 
+          (click)="editProject(project);">Edit</button>
+        <button type="button" class="btn btn-sm btn-light rounded-0 border-dark text-dark py-lg-2 text-center px-2" 
+          (click)="suspendProject(project);" id="suspendProject">Suspend</button>
+        </div>
+        </div>
+        
+        
+        
+        
+        </div>
+        </div>
+        
+        </form>

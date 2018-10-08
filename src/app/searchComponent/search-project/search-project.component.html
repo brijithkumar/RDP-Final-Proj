@@ -1,0 +1,42 @@
+
+<div class="modal-dialog">
+  
+    
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mr-3">Project List</h4>
+            <input type="text" class="form-control col-7" id="projectSearchName" 
+            [(ngModel)]="projectSearchName" name="projectSearchName">
+      <button type="button" class="close" data-dismiss="modal" (click)="closeModalWindow()">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table table-hover">
+              <thead>
+                  <tr>
+                      <th>Project</th>
+                      <th>Priority</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let project of projects | projectFilter : projectSearchName">
+                      
+                      <td>{{project.projectName}}</td>
+                      <td>{{project.priority}}</td>
+                      
+                      <td>
+                          <button id="selectProject" (click)="selectProject(project)" 
+                            class="btn btn-primary btn-sm" type="button">Select</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModalWindow()">
+          Close</button>
+      </div>
+    </div>
+
+  </div> 
+

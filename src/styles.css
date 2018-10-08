@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+
+.priority-left{
+    left: -53px;
+}
+
+.border-dotted{
+    border-top:2px dotted #0080C7;
+}
+
+
+
+
+

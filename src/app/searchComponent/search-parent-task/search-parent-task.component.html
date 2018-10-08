@@ -1,0 +1,40 @@
+
+<div class="modal-dialog">
+  
+    
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mr-3">Parent Task List</h4>
+            <input type="text" class="form-control col-7" id="projectSearchName" 
+            [(ngModel)]="parentTaskSearchName" name="projectSearchName">
+      <button type="button" class="close" data-dismiss="modal" (click)="closeModalWindow()">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table table-hover">
+              <thead>
+                  <tr>
+                      <th>Parent Task Name</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let parentTask of parentTasks | parentTaskFilter: parentTaskSearchName">
+                      
+                      <td>{{parentTask.parentTaskName}}</td>
+                      
+                      <td>
+                          <button id="selectProject" (click)="selectParentTask(parentTask)" 
+                            class="btn btn-primary btn-sm" type="button">Select</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModalWindow()">
+          Close</button>
+      </div>
+    </div>
+
+  </div> 
+

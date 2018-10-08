@@ -1,0 +1,114 @@
+
+<form class="col-12 col-md-8 col-lg-6" (ngSubmit)="taskForm.form.valid && submitTask()" #taskForm="ngForm">
+    <div class="form-group row">
+    <label for="projectName" class="col-5 col-md-4 text-nowrap pr-0 font-weight-bold text-left">Project:</label>
+    <div class="col-3 col-md-5 d-flex flex-column px-0">
+    <input type="text" class="form-control rounded-0 bg-light" id="projectName" name="projectName"
+    [(ngModel)]="selectedProjectName" #projectName="ngModel" required readonly [disabled]="editTaskMode==='true'"> 
+    <div class="alert alert-danger px-0 py-2" *ngIf="(taskForm.submitted || projectName.dirty) && projectName.errors">
+        <div *ngIf="projectName.errors.required">Project Name is required</div>
+      </div>
+    </div>
+    <div class="col-4 col-md-3">
+    <button class="form-control btn btn-sm border-dark rounded-circle pl-1" id ="searchProject" type="button"
+    (click)="searchProjects();" [disabled]="editTaskMode==='true'">Search</button>
+    </div>
+    </div>
+    
+    <div class="form-group row">
+    <label  for="taskName" class="text-nowrap font-weight-bold col-5 col-md-4 text-left">Task:</label>
+    <div class="form-group d-flex flex-column col-7 col-md-8 pl-0">
+    <input type="text" class="form-control rounded-0 bg-light" id="taskName" name="taskName" 
+    [(ngModel)]="task.taskName" #taskName="ngModel" required>
+    <div class="alert alert-danger px-0 py-2" *ngIf="(taskForm.submitted || taskName.dirty) && taskName.errors">
+        <div *ngIf="taskName.errors.required">Task Name is required</div>
+      </div>
+    
+    <label for="parentTaskSelection" class="form-check-label text-nowrap mr-1 pl-4" align="left">
+    <input class="form-check-input" type="checkbox"id="parentTaskSelection" name="parentTaskSelection" 
+    #parentTaskSelection="ngModel" [(ngModel)]="task.parentTaskSelectionModel" > Parent Task
+    </label>
+   
+    </div>
+    </div>
+    
+    <div class="form-group row">
+    <label for="priority" class=" text-nowrap font-weight-bold col-5 col-md-4 text-left">Priority:</label>
+    <div class="d-flex flex-column col-7 col-md-8 px-0">
+    <input class="custom-range rounded-0" type="range" min="0" max="30" id="priority" name="priority"
+    [(ngModel)]="task.priority" #priority="ngModel" required [disabled]="parentTaskSelection.value">
+    <div class="alert alert-danger px-0 py-2 mt-1" *ngIf="!parentTaskSelection.value && (taskForm.submitted || priority.dirty) && 
+        priority.errors">
+        <div *ngIf="priority.errors.required">Priority is required</div>
+      </div>
+    </div>
+    </div>
+
+    <div class="form-group row">
+    <label for="parentTaskName" class="text-nowrap pr-0 font-weight-bold col-5 col-md-4 text-left">Parent Task:</label>
+    <div class="d-flex flex-column col-3 col-md-5 px-0">
+    <input type="text" class="form-control rounded-0 bg-light" id="parentTaskName" name="parentTaskName" 
+    [(ngModel)]="selectedParentTask" #parentTaskName="ngModel" [disabled]="parentTaskSelection.value" readonly>
+    </div>
+    <div class="col-4 col-md-3">
+    <button class="form-control btn btn-sm border-dark rounded-circle pl-1" id ="searchParentTask"  
+    (click)="searchParentTasks()" type="button" [disabled]="parentTaskSelection.value">Search</button>
+    </div>
+    </div>
+    
+    <div class="form-group row">
+    <label for="startDate" class="text-nowrap pr-0 font-weight-bold col-4 col-lg-4 text-left">Start Date:</label>
+    <div class="d-flex flex-column col-8 col-lg-3 px-0">
+    <input type="date" class="form-control form-control-sm rounded-0 bg-light pr-0" id="startDate" 
+      name="startDate" placeholder="Start Date" [(ngModel)]="task.startDate" #startDate="ngModel" required
+      [disabled]="parentTaskSelection.value">
+      <div class="alert alert-danger px-0 py-2" *ngIf="!parentTaskSelection.value && (taskForm.submitted || startDate.dirty) && 
+        startDate.errors">
+        <div *ngIf="startDate.errors.required">Start Date is required</div>
+      </div>
+    </div>
+    <label for="endDate" class="text-nowrap pr-0 font-weight-bold col-4 col-lg-2 text-left">End Date:</label>
+    <div class="d-flex flex-column col-8 col-lg-3 px-0">
+    <input type="date" class="form-control form-control-sm rounded-0 bg-light" id="endDate" 
+      name="endDate" placeholder="End Date" [(ngModel)]="task.endDate" #endDate="ngModel" required
+      [disabled]="parentTaskSelection.value">
+      <div class="alert alert-danger px-0 py-2" *ngIf="!parentTaskSelection.value && (taskForm.submitted || endDate.dirty) && 
+        endDate.errors">
+        <div *ngIf="endDate.errors.required">End Date is required</div>
+      </div>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+    <label for="taskOwner" class="text-nowrap pr-0 font-weight-bold col-5 col-md-4 text-left">User:</label>
+    <div class="d-flex flex-column col-3 col-md-5 px-0">
+    <input type="text" class="form-control rounded-0 bg-light" id="taskOwner" name="taskOwner" 
+    [(ngModel)]="selectedTaskOwnerName" #taskOwner="ngModel" required readonly [disabled]="editTaskMode==='true'">
+    <div class="alert alert-danger px-0 py-2" *ngIf="(taskForm.submitted || taskOwner.dirty) && taskOwner.errors">
+    <div *ngIf="taskOwner.errors.required">User is required</div>
+    </div>
+    </div>
+    <div class="col-4 col-md-3">
+    <button class="form-control btn btn-sm border-dark rounded-circle pl-1" type="button" 
+      (click)="searchTaskOwner()" id ="searchTaskOwner" [disabled]="editTaskMode==='true'">Search</button>
+    </div>
+    </div>
+   
+    <div class="form-group d-flex float-right">
+    <button class="form-control btn btn-light border-dark rounded-0 mr-2" id ="addTask" 
+        type="submit" *ngIf="editTaskMode=='false'">Add Task</button>
+    <button type="submit" class="form-control btn btn-light border-dark rounded-0 mr-2" id="updateTask" 
+        *ngIf="editTaskMode=='true'">Update</button>
+    <button class="form-control btn btn-light border-dark rounded-0" id ="resetTask"  type="button"
+      (click)="taskForm.reset(); initializeTask(); " >Reset</button>
+    </div>
+
+    <div *ngIf="statusFlag === 1" class="alert alert-success col-8">
+        {{statusMessage}}
+      </div>
+      <div *ngIf="statusFlag === 2" class="alert alert-danger col-8">
+        {{statusMessage}}
+      </div>
+
+
+    </form>

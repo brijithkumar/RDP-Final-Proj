@@ -1,0 +1,38 @@
+<div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title mr-3">Manager List</h4>
+            <input type="text" class="form-control col-7" id="managerSearchName" [(ngModel)]="managerSearchName" name="managerSearchName">
+      <button type="button" class="close" data-dismiss="modal" (click)="closeModalWindow()">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table table-hover">
+              <thead>
+                  <tr>
+                      <th>Manager</th>
+                      <th>Employee ID</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let manager of managers | managerFilter : managerSearchName">
+                      
+                      <td>{{manager.firstName + ' ' + manager.lastName}}</td>
+                      <td>{{ manager.employeeId }}</td>
+                      <td>
+                          <button id="selectManager" (click)="selectManager(manager)" 
+                            class="btn btn-primary btn-sm" type="button">Select</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModalWindow()">
+          Close</button>
+      </div>
+    </div>
+
+  </div>
